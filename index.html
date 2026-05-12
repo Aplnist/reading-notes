@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阅读感悟</title>
+<style>
+/* ===== Design Tokens ===== */
+:root {
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-text: #2c2c2c;
+  --color-text-muted: #6b6b6b;
+  --color-accent: #8b4513;
+  --color-accent-light: #a0522d;
+  --color-accent-alt: #5a7d5a;
+  --color-danger: #c0392b;
+  --color-border: #e8e0d5;
+  --color-shadow: rgba(0,0,0,0.06);
+  --color-overlay: rgba(0,0,0,0.4);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+  --max-width: 760px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1a1a1a;
+    --color-surface: #2a2a2a;
+    --color-text: #e0e0e0;
+    --color-text-muted: #999;
+    --color-accent: #d4a574;
+    --color-accent-light: #e0b888;
+    --color-accent-alt: #7a9d7a;
+    --color-danger: #e05050;
+    --color-border: #3a3a3a;
+    --color-shadow: rgba(0,0,0,0.3);
+    --color-overlay: rgba(0,0,0,0.6);
+  }
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.header {
+  text-align: center;
+  padding: 40px 16px 24px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 2px;
+}
+.header p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* ===== Container ===== */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+/* ===== Toolbar ===== */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.toolbar .btn {
+  flex-shrink: 0;
+}
+.toolbar .search-wrap {
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+}
+.toolbar .search-wrap input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.toolbar .search-wrap input:focus {
+  border-color: var(--color-accent);
+}
+.toolbar .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+.toolbar select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-accent-light); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.btn-outline:hover { background: var(--color-border); }
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+.btn-danger:hover { background: var(--color-danger); color: #fff; }
+.btn-sm { padding: 4px 10px; font-size: 13px; }
+.btn-ai {
+  background: transparent;
+  border: 1px solid var(--color-accent-alt);
+  color: var(--color-accent-alt);
+}
+.btn-ai:hover { background: var(--color-accent-alt); color: #fff; }
+
+/* ===== Stats ===== */
+.stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.stats strong { color: var(--color-text); }
+
+/* ===== Card Grid ===== */
+.entry-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 640px) {
+  .entry-list { grid-template-columns: 1fr; }
+  .header { padding: 28px 16px 16px; }
+  .header h1 { font-size: 24px; }
+}
+
+/* ===== Card ===== */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-meta {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+.card-preview {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.card-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ===== Badge ===== */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-book { background: #f0e6d3; color: #8b4513; }
+.badge-article { background: #dce8dc; color: #3d6b3d; }
+.badge-paper { background: #dce0e8; color: #3d4d6b; }
+.badge-other { background: #e8e8e8; color: #555; }
+
+@media (prefers-color-scheme: dark) {
+  .badge-book { background: #3d2a15; color: #d4a574; }
+  .badge-article { background: #1a2e1a; color: #7a9d7a; }
+  .badge-paper { background: #1a2030; color: #7a8dad; }
+  .badge-other { background: #333; color: #aaa; }
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 60px 16px;
+  color: var(--color-text-muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 15px; }
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.95);
+  transition: transform 0.2s;
+}
+.modal-overlay.active .modal { transform: scale(1); }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.modal-header h2 { font-size: 18px; font-weight: 600; }
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 4px;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--color-text); }
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  justify-content: flex-end;
+}
+
+/* ===== Form ===== */
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--color-text);
+}
+.form-group label .required { color: var(--color-danger); }
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--color-accent);
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.7;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ===== Detail View ===== */
+.detail-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+.detail-value {
+  font-size: 15px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+/* ===== Toast ===== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.toast {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: #fff;
+  background: #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: toastIn 0.3s ease-out;
+  max-width: 400px;
+  text-align: center;
+}
+.toast.success { background: var(--color-accent-alt); }
+.toast.error { background: var(--color-danger); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Confirm Dialog ===== */
+.confirm-buttons {
+  display: inline-flex;
+  gap: 8px;
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* ===== Prompt Modal ===== */
+.prompt-text {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: var(--font);
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>阅读感悟</h1>
+  <p>记录每一次阅读的思考与收获</p>
+</header>
+
+<main class="container">
+  <!-- Toolbar -->
+  <div class="toolbar" id="toolbar">
+    <button class="btn btn-primary" data-action="new">+ 新笔记</button>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜索标题或内容…" data-action="search">
+    </div>
+    <select id="typeFilter" data-action="filter">
+      <option value="all">全部类型</option>
+      <option value="book">书籍</option>
+      <option value="article">文章</option>
+      <option value="paper">论文</option>
+      <option value="other">其他</option>
+    </select>
+    <button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats"></div>
+
+  <!-- Entry List -->
+  <div class="entry-list" id="entryList"></div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="icon">📖</div>
+    <p>还没有阅读笔记，点击上方「+ 新笔记」开始记录吧</p>
+  </div>
+</main>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Footer -->
+<footer class="footer">数据保存在本地浏览器中 · 定期导出以防数据丢失</footer>
+
+<script>
+const App = {
+  state: {
+    entries: [],
+    filter: { type: 'all', search: '' },
+    editingId: null,
+    pendingDeleteId: null,
+  },
+
+  /* ===== Init ===== */
+  init() {
+    this.loadFromStorage();
+    this.bindEvents();
+    this.render();
+  },
+
+  /* ===== Storage ===== */
+  loadFromStorage() {
+    try {
+      const raw = localStorage.getItem('readingReflections');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) {
+          this.state.entries = data;
+          return;
+        }
+      }
+    } catch (e) {
+      // corrupted data, reset
+    }
+    this.state.entries = [];
+  },
+
+  saveToStorage() {
+    localStorage.setItem('readingReflections', JSON.stringify(this.state.entries));
+  },
+
+  /* ===== Helpers ===== */
+  generateId() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+  },
+
+  formatDate(iso) {
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  },
+
+  typeLabel(type) {
+    const map = { book: '书籍', article: '文章', paper: '论文', other: '其他' };
+    return map[type] || '其他';
+  },
+
+  /* ===== CRUD ===== */
+  createEntry(data) {
+    const now = new Date().toISOString();
+    const entry = {
+      id: this.generateId(),
+      title: data.title.trim(),
+      author: data.author.trim(),
+      type: data.type || 'other',
+      source: data.source.trim(),
+      content: data.content.trim(),
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.state.entries.unshift(entry);
+    this.saveToStorage();
+    return entry;
+  },
+
+  updateEntry(id, data) {
+    const entry = this.state.entries.find(e => e.id === id);
+    if (!entry) return null;
+    entry.title = data.title.trim();
+    entry.author = data.author.trim();
+    entry.type = data.type || 'other';
+    entry.source = data.source.trim();
+    entry.content = data.content.trim();
+    entry.updatedAt = new Date().toISOString();
+    this.saveToStorage();
+    return entry;
+  },
+
+  deleteEntry(id) {
+    this.state.entries = this.state.entries.filter(e => e.id !== id);
+    this.saveToStorage();
+  },
+
+  getEntry(id) {
+    return this.state.entries.find(e => e.id === id);
+  },
+
+  getFilteredEntries() {
+    const { type, search } = this.state.filter;
+    let entries = this.state.entries;
+    if (type !== 'all') {
+      entries = entries.filter(e => e.type === type);
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      entries = entries.filter(e =>
+        e.title.toLowerCase().includes(q) ||
+        e.content.toLowerCase().includes(q) ||
+        e.author.toLowerCase().includes(q)
+      );
+    }
+    return entries;
+  },
+
+  /* ===== AI Polish ===== */
+  buildPolishPrompt(entry) {
+    return `请帮我润色以下阅读感悟。要求：
+
+1. 保留我的原意、观点和个人语气，不要添加我没有表达的思想
+2. 修正错别字、语法错误和不通顺的句子
+3. 让表达更清晰流畅，适当优化句式结构
+4. 保持原有的段落结构
+5. 用中文回复，只输出润色后的文本，不要加任何解释
+
+---以下是需要润色的阅读感悟---
+
+[标题: ${entry.title || '未填写'}]
+[作者: ${entry.author || '未填写'}]
+[类型: ${this.typeLabel(entry.type)}]
+
+${entry.content}`;
+  },
+
+  async copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      // Fallback for non-HTTPS or older browsers
+      return this.fallbackCopy(text);
+    }
+  },
+
+  fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return true;
+    } catch (e) {
+      document.body.removeChild(textarea);
+      return false;
+    }
+  },
+
+  showPromptModal(text) {
+    const overlay = document.getElementById('modalOverlay');
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <h2>AI 润色提示词</h2>
+        <button class="modal-close" data-action="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--color-text-muted);margin-bottom:8px">
+          已生成润色提示词，请复制后粘贴到 Claude Code 中
+        </p>
+        <div class="prompt-text">${this.escapeHtml(text)}</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" data-action="close-modal">关闭</button>
+        <button class="btn btn-primary" id="manualCopyBtn">复制到剪贴板</button>
+      </div>
+    `;
+    overlay.classList.add('active');
+    document.getElementById('manualCopyBtn').addEventListener('click', () => {
+      this.fallbackCopy(text);
+      this.showToast('已复制到剪贴板');
+    });
+  },
+
+  escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  },
+
+  async handleAIPolish(content, title, author, type) {
+    if (!content || !content.trim()) {
+      this.showToast('请先写一些内容再使用 AI 润色', 'error');
+      return;
+    }
+    const entry = { title, author, type, content };
+    const prompt = this.buildPolishPrompt(entry);
+    const ok = await this.copyToClipboard(prompt);
+    if (ok) {
+      this.showToast('润色提示词已复制到剪贴板，请粘贴到 Claude Code 中', 'success');
+    } else {
+      this.showPromptModal(prompt);
+    }
+  },
+
+  /* ===== Export ===== */
+  exportJSON() {
+    const data = JSON.stringify(this.state.entries, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const d = new Date();
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `阅读感悟备份_${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    this.showToast('数据已导出', 'success');
+  },
+
+  /* ===== Toast ===== */
+  showToast(message, type) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type || ''}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  },
+
+  /* ===== Modal ===== */
+  openModal(mode, entryId) {
+    const overlay = document.getElementById('modalOverlay');
+    const modal = document.getElementById('modal');
+    this.state.editingId = entryId || null;
+    this.state.pendingDeleteId = null;
+
+    if (mode === 'new' || mode === 'edit') {
+      let data = { title: '', author: '', type: 'book', source: '', content: '' };
+      if (mode === 'edit' && entryId) {
+        const entry = this.getEntry(entryId);
+        if (entry) {
+          data = { title: entry.title, author: entry.author, type: entry.type, source: entry.source, content: entry.content };
+        }
+      }
+      const title = mode === 'new' ? '新笔记' : '编辑笔记';
+      modal.innerHTML = `
+        <div class="modal-header">
+          <h2>${title}</h2>
+          <button class="modal-close" data-action="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>书名/标题 <span class="required">*</span></label>
+            <input type="text" id="formTitle" value="${this.escapeHtml(data.title)}" placeholder="输入书名或文章标题">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>作者</label>
+              <input type="text" id="formAuthor" value="${this.escapeHtml(data.author)}" placeholder="作者或来源">
+            </div>
+            <div class="form-group">
+              <label>类型</label>
+              <select id="formType">
+                <option value="book" ${data.type === 'book' ? 'selected' : ''}>书籍</option>
+                <option value="article" ${data.type === 'article' ? 'selected' : ''}>文章</option>
+                <option value="paper" ${data.type === 'paper' ? 'selected' : ''}>论文</option>
+                <option value="other" ${data.type === 'other' ? 'selected' : ''}>其他</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>来源/链接</label>
+            <input type="text" id="formSource" value="${this.escapeHtml(data.source)}" placeholder="网址或出处（可选）">
+          </div>
+          <div class="form-group">
+            <label>阅读感悟 <span class="required">*</span></label>
+            <textarea id="formContent" placeholder="写下你的思考和感悟…">${this.escapeHtml(data.content)}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ai" data-action="ai-polish-form">AI 润色 ✨</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-outline" data-action="close-modal">取消</button>
+          <button class="btn btn-primary" data-action="save-form">保存</button>
+        </div>
+      `;
+    } else if (mode === 'view') {
+      const entry = this.getEntry(entryId);
+      if (!entry) return;
+      modal.innerHTML = `
+        <div class="modal-header">
+          <h2>${this.escapeHtml(entry.title)}</h2>
+          <button class="modal-close" data-action="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p><span class="badge badge-${entry.type}">${this.typeLabel(entry.type)}</span></p>
+          ${entry.author ? `<div class="detail-label">作者</div><div class="detail-value">${this.escapeHtml(entry.author)}</div>` : ''}
+          ${entry.source ? `<div class="detail-label">来源</div><div class="detail-value"><a href="${this.escapeHtml(entry.source)}" target="_blank" rel="noopener" style="color:var(--color-accent)">${this.escapeHtml(entry.source)}</a></div>` : ''}
+          <div class="detail-label">日期</div>
+          <div class="detail-value">${this.formatDate(entry.createdAt)}</div>
+          <div class="detail-label">感悟</div>
+          <div class="detail-value" style="white-space:pre-wrap">${this.escapeHtml(entry.content)}</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ai" data-action="ai-polish-view">AI 润色 ✨</button>
+          <button class="btn btn-danger btn-sm" data-action="delete-entry">删除</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-outline" data-action="close-modal">关闭</button>
+          <button class="btn btn-primary" data-action="edit-entry">编辑</button>
+        </div>
+      `;
+      // Store entry ID for actions
+      modal.dataset.viewEntryId = entryId;
+    } else if (mode === 'confirm-delete') {
+      const entry = this.getEntry(entryId);
+      if (!entry) return;
+      this.state.pendingDeleteId = entryId;
+      modal.innerHTML = `
+        <div class="modal-header">
+          <h2>确认删除</h2>
+          <button class="modal-close" data-action="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>确定要删除「<strong>${this.escapeHtml(entry.title)}</strong>」吗？此操作不可撤销。</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" data-action="close-modal">取消</button>
+          <button class="btn btn-danger" data-action="confirm-delete">确认删除</button>
+        </div>
+      `;
+    }
+
+    overlay.classList.add('active');
+    // Focus first input after transition
+    setTimeout(() => {
+      const firstInput = modal.querySelector('input:not([type=hidden])');
+      if (firstInput) firstInput.focus();
+    }, 150);
+  },
+
+  closeModal() {
+    const overlay = document.getElementById('modalOverlay');
+    overlay.classList.remove('active');
+    this.state.editingId = null;
+    this.state.pendingDeleteId = null;
+  },
+
+  /* ===== Form Handlers ===== */
+  saveForm() {
+    const title = document.getElementById('formTitle')?.value || '';
+    const author = document.getElementById('formAuthor')?.value || '';
+    const type = document.getElementById('formType')?.value || 'other';
+    const source = document.getElementById('formSource')?.value || '';
+    const content = document.getElementById('formContent')?.value || '';
+
+    if (!title.trim()) {
+      this.showToast('请输入书名或标题', 'error');
+      document.getElementById('formTitle')?.focus();
+      return;
+    }
+    if (!content.trim()) {
+      this.showToast('请写下你的阅读感悟', 'error');
+      document.getElementById('formContent')?.focus();
+      return;
+    }
+
+    if (this.state.editingId) {
+      this.updateEntry(this.state.editingId, { title, author, type, source, content });
+      this.showToast('笔记已更新', 'success');
+    } else {
+      this.createEntry({ title, author, type, source, content });
+      this.showToast('笔记已保存', 'success');
+    }
+    this.closeModal();
+    this.render();
+  },
+
+  /* ===== Render ===== */
+  render() {
+    const entries = this.getFilteredEntries();
+    this.renderStats(entries);
+    this.renderEntryList(entries);
+  },
+
+  renderStats(entries) {
+    const stats = document.getElementById('stats');
+    const total = this.state.entries.length;
+    const books = this.state.entries.filter(e => e.type === 'book').length;
+    const articles = this.state.entries.filter(e => e.type === 'article').length;
+    const papers = this.state.entries.filter(e => e.type === 'paper').length;
+    if (total === 0) {
+      stats.innerHTML = '';
+      return;
+    }
+    stats.innerHTML = `共 <strong>${total}</strong> 篇 · 书籍 <strong>${books}</strong> · 文章 <strong>${articles}</strong> · 论文 <strong>${papers}</strong>`;
+  },
+
+  renderEntryList(entries) {
+    const list = document.getElementById('entryList');
+    const empty = document.getElementById('emptyState');
+
+    if (entries.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    list.innerHTML = entries.map(entry => `
+      <article class="card">
+        <div class="card-header">
+          <span class="card-title" title="${this.escapeHtml(entry.title)}">${this.escapeHtml(entry.title)}</span>
+          <span class="badge badge-${entry.type}">${this.typeLabel(entry.type)}</span>
+        </div>
+        <div class="card-meta">
+          ${entry.author ? this.escapeHtml(entry.author) + ' · ' : ''}${this.formatDate(entry.createdAt)}
+        </div>
+        <div class="card-preview">${this.escapeHtml(entry.content)}</div>
+        <div class="card-actions">
+          <button class="btn btn-outline btn-sm" data-action="view" data-id="${entry.id}">查看</button>
+          <button class="btn btn-outline btn-sm" data-action="edit" data-id="${entry.id}">编辑</button>
+          <button class="btn btn-ai btn-sm" data-action="ai-polish-card" data-id="${entry.id}">AI 润色</button>
+          <button class="btn btn-danger btn-sm" data-action="delete" data-id="${entry.id}">删除</button>
+        </div>
+      </article>
+    `).join('');
+  },
+
+  /* ===== Event Delegation ===== */
+  bindEvents() {
+    // Click delegation
+    document.addEventListener('click', (e) => {
+      const action = e.target.closest('[data-action]')?.dataset?.action;
+      const id = e.target.closest('[data-id]')?.dataset?.id;
+
+      switch (action) {
+        case 'new':
+          this.openModal('new');
+          break;
+        case 'edit':
+          this.openModal('edit', id);
+          break;
+        case 'view':
+          this.openModal('view', id);
+          break;
+        case 'delete':
+          this.openModal('confirm-delete', id);
+          break;
+        case 'confirm-delete':
+          if (this.state.pendingDeleteId) {
+            this.deleteEntry(this.state.pendingDeleteId);
+            this.closeModal();
+            this.showToast('笔记已删除', 'success');
+            this.state.pendingDeleteId = null;
+            this.render();
+          }
+          break;
+        case 'edit-entry': {
+          const viewId = document.getElementById('modal')?.dataset?.viewEntryId;
+          if (viewId) this.openModal('edit', viewId);
+          break;
+        }
+        case 'close-modal':
+          this.closeModal();
+          break;
+        case 'export':
+          this.exportJSON();
+          break;
+        case 'ai-polish-card': {
+          const entry = this.getEntry(id);
+          if (entry) this.handleAIPolish(entry.content, entry.title, entry.author, entry.type);
+          break;
+        }
+        case 'ai-polish-form': {
+          const content = document.getElementById('formContent')?.value || '';
+          const title = document.getElementById('formTitle')?.value || '';
+          const author = document.getElementById('formAuthor')?.value || '';
+          const type = document.getElementById('formType')?.value || 'other';
+          this.handleAIPolish(content, title, author, type);
+          break;
+        }
+        case 'ai-polish-view': {
+          const viewId = document.getElementById('modal')?.dataset?.viewEntryId;
+          const entry = viewId ? this.getEntry(viewId) : null;
+          if (entry) this.handleAIPolish(entry.content, entry.title, entry.author, entry.type);
+          break;
+        }
+        case 'save-form':
+          this.saveForm();
+          break;
+      }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        this.closeModal();
+      }
+    });
+
+    // Keyboard: Escape to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const overlay = document.getElementById('modalOverlay');
+        if (overlay.classList.contains('active')) {
+          this.closeModal();
+        }
+      }
+      // Ctrl+Enter to save in form
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        const overlay = document.getElementById('modalOverlay');
+        if (overlay.classList.contains('active') && document.getElementById('formContent')) {
+          e.preventDefault();
+          this.saveForm();
+        }
+      }
+    });
+
+    // Search input
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+      this.state.filter.search = searchInput.value;
+      this.render();
+    });
+
+    // Type filter
+    document.getElementById('typeFilter').addEventListener('change', (e) => {
+      this.state.filter.type = e.target.value;
+      this.render();
+    });
+
+    // Save hint counter
+    let saveCount = 0;
+    const origSave = this.saveToStorage.bind(this);
+    this.saveToStorage = function() {
+      origSave();
+      saveCount++;
+      if (saveCount > 0 && saveCount % 15 === 0) {
+        setTimeout(() => App.showToast('提示：定期导出数据以防丢失', 'success'), 1000);
+      }
+    };
+  }
+};
+
+// Boot
+App.init();
+</script>
+</body>
+</html>
