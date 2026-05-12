@@ -451,6 +451,8 @@ body {
       <option value="other">其他</option>
     </select>
     <button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button>
+    <button class="btn btn-outline btn-sm" data-action="import">导入 JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
   </div>
 
   <!-- Stats -->
@@ -613,6 +615,59 @@ const App = {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     this.showToast('数据已导出', 'success');
+  },
+
+  importJSON() {
+    document.getElementById('importFile').click();
+  },
+
+  handleImportFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data)) {
+          this.showToast('文件格式错误：需要 JSON 数组', 'error');
+          return;
+        }
+        let added = 0;
+        let skipped = 0;
+        const existingIds = new Set(this.state.entries.map(e => e.id));
+        for (const item of data) {
+          if (!item.id || !item.title || !item.content) {
+            skipped++;
+            continue;
+          }
+          if (existingIds.has(item.id)) {
+            skipped++;
+            continue;
+          }
+          // Ensure required fields
+          const entry = {
+            id: item.id,
+            title: item.title,
+            author: item.author || '',
+            type: item.type || 'other',
+            source: item.source || '',
+            content: item.content,
+            createdAt: item.createdAt || new Date().toISOString(),
+            updatedAt: item.updatedAt || new Date().toISOString(),
+          };
+          this.state.entries.unshift(entry);
+          existingIds.add(item.id);
+          added++;
+        }
+        this.saveToStorage();
+        this.render();
+        this.showToast(`导入完成：新增 ${added} 篇${skipped > 0 ? '，跳过 ' + skipped + ' 篇（重复或无效）' : ''}`, 'success');
+      } catch (err) {
+        this.showToast('JSON 解析失败，请检查文件格式', 'error');
+      }
+    };
+    reader.readAsText(file);
+    // Reset so re-importing the same file works
+    document.getElementById('importFile').value = '';
   },
 
   /* ===== Toast ===== */
@@ -865,6 +920,9 @@ const App = {
         case 'export':
           this.exportJSON();
           break;
+        case 'import':
+          this.importJSON();
+          break;
         case 'save-form':
           this.saveForm();
           break;
@@ -894,6 +952,11 @@ const App = {
           this.saveForm();
         }
       }
+    });
+
+    // Import file
+    document.getElementById('importFile').addEventListener('change', (e) => {
+      this.handleImportFile(e.target.files[0]);
     });
 
     // Search input
