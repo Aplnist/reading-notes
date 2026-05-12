@@ -160,12 +160,6 @@ body {
 }
 .btn-danger:hover { background: var(--color-danger); color: #fff; }
 .btn-sm { padding: 4px 10px; font-size: 13px; }
-.btn-ai {
-  background: transparent;
-  border: 1px solid var(--color-accent-alt);
-  color: var(--color-accent-alt);
-}
-.btn-ai:hover { background: var(--color-accent-alt); color: #fff; }
 
 /* ===== Stats ===== */
 .stats {
@@ -432,20 +426,6 @@ body {
   color: var(--color-text-muted);
 }
 
-/* ===== Prompt Modal ===== */
-.prompt-text {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  max-height: 300px;
-  overflow-y: auto;
-  font-family: var(--font);
-  margin-bottom: 8px;
-}
 </style>
 </head>
 <body>
@@ -612,100 +592,11 @@ const App = {
     return entries;
   },
 
-  /* ===== AI Polish ===== */
-  buildPolishPrompt(entry) {
-    return `请帮我润色以下阅读感悟。要求：
-
-1. 保留我的原意、观点和个人语气，不要添加我没有表达的思想
-2. 修正错别字、语法错误和不通顺的句子
-3. 让表达更清晰流畅，适当优化句式结构
-4. 保持原有的段落结构
-5. 用中文回复，只输出润色后的文本，不要加任何解释
-
----以下是需要润色的阅读感悟---
-
-[标题: ${entry.title || '未填写'}]
-[作者: ${entry.author || '未填写'}]
-[类型: ${this.typeLabel(entry.type)}]
-
-${entry.content}`;
-  },
-
-  async copyToClipboard(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch (e) {
-      // Fallback for non-HTTPS or older browsers
-      return this.fallbackCopy(text);
-    }
-  },
-
-  fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '-9999px';
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    try {
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-      return true;
-    } catch (e) {
-      document.body.removeChild(textarea);
-      return false;
-    }
-  },
-
-  showPromptModal(text) {
-    const overlay = document.getElementById('modalOverlay');
-    const modal = document.getElementById('modal');
-    modal.innerHTML = `
-      <div class="modal-header">
-        <h2>AI 润色提示词</h2>
-        <button class="modal-close" data-action="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:14px;color:var(--color-text-muted);margin-bottom:8px">
-          已生成润色提示词，请复制后粘贴到 Claude Code 中
-        </p>
-        <div class="prompt-text">${this.escapeHtml(text)}</div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" data-action="close-modal">关闭</button>
-        <button class="btn btn-primary" id="manualCopyBtn">复制到剪贴板</button>
-      </div>
-    `;
-    overlay.classList.add('active');
-    document.getElementById('manualCopyBtn').addEventListener('click', () => {
-      this.fallbackCopy(text);
-      this.showToast('已复制到剪贴板');
-    });
-  },
-
-  escapeHtml(str) {
+escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
-  },
-
-  async handleAIPolish(content, title, author, type) {
-    if (!content || !content.trim()) {
-      this.showToast('请先写一些内容再使用 AI 润色', 'error');
-      return;
-    }
-    const entry = { title, author, type, content };
-    const prompt = this.buildPolishPrompt(entry);
-    const ok = await this.copyToClipboard(prompt);
-    if (ok) {
-      this.showToast('润色提示词已复制到剪贴板，请粘贴到 Claude Code 中', 'success');
-    } else {
-      this.showPromptModal(prompt);
-    }
-  },
+  }
 
   /* ===== Export ===== */
   exportJSON() {
@@ -789,7 +680,6 @@ ${entry.content}`;
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-ai" data-action="ai-polish-form">AI 润色 ✨</button>
           <div style="flex:1"></div>
           <button class="btn btn-outline" data-action="close-modal">取消</button>
           <button class="btn btn-primary" data-action="save-form">保存</button>
@@ -813,7 +703,6 @@ ${entry.content}`;
           <div class="detail-value" style="white-space:pre-wrap">${this.escapeHtml(entry.content)}</div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-ai" data-action="ai-polish-view">AI 润色 ✨</button>
           <button class="btn btn-danger btn-sm" data-action="delete-entry">删除</button>
           <div style="flex:1"></div>
           <button class="btn btn-outline" data-action="close-modal">关闭</button>
@@ -930,7 +819,6 @@ ${entry.content}`;
         <div class="card-actions">
           <button class="btn btn-outline btn-sm" data-action="view" data-id="${entry.id}">查看</button>
           <button class="btn btn-outline btn-sm" data-action="edit" data-id="${entry.id}">编辑</button>
-          <button class="btn btn-ai btn-sm" data-action="ai-polish-card" data-id="${entry.id}">AI 润色</button>
           <button class="btn btn-danger btn-sm" data-action="delete" data-id="${entry.id}">删除</button>
         </div>
       </article>
@@ -977,25 +865,6 @@ ${entry.content}`;
         case 'export':
           this.exportJSON();
           break;
-        case 'ai-polish-card': {
-          const entry = this.getEntry(id);
-          if (entry) this.handleAIPolish(entry.content, entry.title, entry.author, entry.type);
-          break;
-        }
-        case 'ai-polish-form': {
-          const content = document.getElementById('formContent')?.value || '';
-          const title = document.getElementById('formTitle')?.value || '';
-          const author = document.getElementById('formAuthor')?.value || '';
-          const type = document.getElementById('formType')?.value || 'other';
-          this.handleAIPolish(content, title, author, type);
-          break;
-        }
-        case 'ai-polish-view': {
-          const viewId = document.getElementById('modal')?.dataset?.viewEntryId;
-          const entry = viewId ? this.getEntry(viewId) : null;
-          if (entry) this.handleAIPolish(entry.content, entry.title, entry.author, entry.type);
-          break;
-        }
         case 'save-form':
           this.saveForm();
           break;
