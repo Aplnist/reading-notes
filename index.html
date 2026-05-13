@@ -84,9 +84,7 @@ body {
   align-items: center;
   margin-bottom: 16px;
 }
-.toolbar .btn {
-  flex-shrink: 0;
-}
+.toolbar .btn { flex-shrink: 0; }
 .toolbar .search-wrap {
   flex: 1;
   min-width: 160px;
@@ -104,9 +102,7 @@ body {
   outline: none;
   transition: border-color 0.2s;
 }
-.toolbar .search-wrap input:focus {
-  border-color: var(--color-accent);
-}
+.toolbar .search-wrap input:focus { border-color: var(--color-accent); }
 .toolbar .search-icon {
   position: absolute;
   left: 10px;
@@ -142,10 +138,7 @@ body {
   transition: all 0.15s;
   text-decoration: none;
 }
-.btn-primary {
-  background: var(--color-accent);
-  color: #fff;
-}
+.btn-primary { background: var(--color-accent); color: #fff; }
 .btn-primary:hover { background: var(--color-accent-light); }
 .btn-outline {
   background: transparent;
@@ -160,6 +153,7 @@ body {
 }
 .btn-danger:hover { background: var(--color-danger); color: #fff; }
 .btn-sm { padding: 4px 10px; font-size: 13px; }
+.btn-lg { padding: 10px 24px; font-size: 15px; }
 
 /* ===== Stats ===== */
 .stats {
@@ -265,7 +259,7 @@ body {
 .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { font-size: 15px; }
 
-/* ===== Modal Overlay ===== */
+/* ===== Modal Overlay (view / confirm-delete only) ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -287,8 +281,8 @@ body {
   background: var(--color-surface);
   border-radius: var(--radius);
   width: 100%;
-  max-width: 660px;
-  max-height: 92vh;
+  max-width: 560px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   transform: scale(0.95);
@@ -327,9 +321,7 @@ body {
 }
 
 /* ===== Form ===== */
-.form-group {
-  margin-bottom: 14px;
-}
+.form-group { margin-bottom: 14px; }
 .form-group label {
   display: block;
   font-size: 14px;
@@ -342,7 +334,7 @@ body {
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: 15px;
@@ -353,12 +345,9 @@ body {
   transition: border-color 0.2s;
 }
 .form-group input:focus,
-.form-group textarea:focus {
-  border-color: var(--color-accent);
-}
+.form-group textarea:focus { border-color: var(--color-accent); }
 .form-group textarea {
-  resize: vertical;
-  min-height: 320px;
+  resize: none;
   line-height: 1.7;
 }
 .form-row {
@@ -368,6 +357,80 @@ body {
 }
 @media (max-width: 640px) {
   .form-row { grid-template-columns: 1fr; }
+}
+
+/* ===== Editor Page ===== */
+.editor-page {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.editor-page.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+.editor-topbar h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+.editor-back {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font);
+  font-size: 14px;
+}
+.editor-back:hover { background: var(--color-border); color: var(--color-text); }
+.editor-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px 16px;
+}
+.editor-body-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.editor-body-inner .form-group:last-of-type {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.editor-body-inner .form-group:last-of-type textarea {
+  flex: 1;
+  min-height: 300px;
+}
+.editor-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  margin-top: 16px;
 }
 
 /* ===== Detail View ===== */
@@ -412,12 +475,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Confirm Dialog ===== */
-.confirm-buttons {
-  display: inline-flex;
-  gap: 8px;
-}
-
 /* ===== Footer ===== */
 .footer {
   text-align: center;
@@ -426,58 +483,113 @@ body {
   color: var(--color-text-muted);
 }
 
+/* ===== Unsaved Warning ===== */
+.unsaved-bar {
+  display: none;
+  padding: 8px 16px;
+  background: #fff3cd;
+  color: #856404;
+  font-size: 13px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.unsaved-bar.visible { display: block; }
+@media (prefers-color-scheme: dark) {
+  .unsaved-bar { background: #3d3200; color: #ffd970; }
+}
 </style>
 </head>
 <body>
 
-<header class="header">
-  <h1>阅读感悟</h1>
-  <p>记录每一次阅读的思考与收获</p>
-</header>
+<!-- ===== List Page ===== -->
+<div id="listPage">
+  <header class="header">
+    <h1>阅读感悟</h1>
+    <p>记录每一次阅读的思考与收获</p>
+  </header>
 
-<main class="container">
-  <!-- Toolbar -->
-  <div class="toolbar" id="toolbar">
-    <button class="btn btn-primary" data-action="new">+ 新笔记</button>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="搜索标题或内容…" data-action="search">
+  <main class="container">
+    <div class="toolbar" id="toolbar">
+      <button class="btn btn-primary" data-action="new">+ 新笔记</button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索标题或内容…" data-action="search">
+      </div>
+      <select id="typeFilter" data-action="filter">
+        <option value="all">全部类型</option>
+        <option value="book">书籍</option>
+        <option value="article">文章</option>
+        <option value="paper">论文</option>
+        <option value="other">其他</option>
+      </select>
+      <button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button>
+      <button class="btn btn-outline btn-sm" data-action="import">导入 JSON</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
     </div>
-    <select id="typeFilter" data-action="filter">
-      <option value="all">全部类型</option>
-      <option value="book">书籍</option>
-      <option value="article">文章</option>
-      <option value="paper">论文</option>
-      <option value="other">其他</option>
-    </select>
-    <button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button>
-    <button class="btn btn-outline btn-sm" data-action="import">导入 JSON</button>
-    <input type="file" id="importFile" accept=".json" style="display:none">
+
+    <div class="stats" id="stats"></div>
+    <div class="entry-list" id="entryList"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="icon">📖</div>
+      <p>还没有阅读笔记，点击上方「+ 新笔记」开始记录吧</p>
+    </div>
+  </main>
+
+  <footer class="footer">数据保存在本地浏览器中 · 定期导出以防数据丢失</footer>
+</div>
+
+<!-- ===== Editor Page ===== -->
+<div class="editor-page" id="editorPage">
+  <div class="editor-topbar">
+    <button class="editor-back" data-action="editor-cancel">&larr; 返回</button>
+    <h2 id="editorTitle">新笔记</h2>
   </div>
-
-  <!-- Stats -->
-  <div class="stats" id="stats"></div>
-
-  <!-- Entry List -->
-  <div class="entry-list" id="entryList"></div>
-
-  <!-- Empty State -->
-  <div class="empty-state" id="emptyState" style="display:none">
-    <div class="icon">📖</div>
-    <p>还没有阅读笔记，点击上方「+ 新笔记」开始记录吧</p>
+  <div class="unsaved-bar" id="unsavedBar">内容已修改，返回将丢失更改</div>
+  <div class="editor-body">
+    <div class="editor-body-inner">
+      <div class="form-group">
+        <label>书名/标题 <span class="required">*</span></label>
+        <input type="text" id="formTitle" placeholder="输入书名或文章标题">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>作者</label>
+          <input type="text" id="formAuthor" placeholder="作者或来源">
+        </div>
+        <div class="form-group">
+          <label>类型</label>
+          <select id="formType">
+            <option value="book">书籍</option>
+            <option value="article">文章</option>
+            <option value="paper">论文</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>来源/链接</label>
+        <input type="text" id="formSource" placeholder="网址或出处（可选）">
+      </div>
+      <div class="form-group">
+        <label>阅读感悟 <span class="required">*</span></label>
+        <textarea id="formContent" placeholder="写下你的思考和感悟…"></textarea>
+      </div>
+      <div class="editor-actions">
+        <button class="btn btn-outline btn-lg" data-action="editor-cancel">取消</button>
+        <button class="btn btn-primary btn-lg" data-action="editor-save">保存</button>
+      </div>
+    </div>
   </div>
-</main>
+</div>
 
-<!-- Modal Overlay -->
+<!-- Modal Overlay (view / confirm-delete) -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modal"></div>
 </div>
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- Footer -->
-<footer class="footer">数据保存在本地浏览器中 · 定期导出以防数据丢失</footer>
 
 <script>
 const App = {
@@ -486,13 +598,15 @@ const App = {
     filter: { type: 'all', search: '' },
     editingId: null,
     pendingDeleteId: null,
+    editorDirty: false,
+    editorOriginal: '',
   },
 
   /* ===== Init ===== */
   init() {
     this.loadFromStorage();
     this.bindEvents();
-    this.render();
+    this.handleHash();
   },
 
   /* ===== Storage ===== */
@@ -501,14 +615,9 @@ const App = {
       const raw = localStorage.getItem('readingReflections');
       if (raw) {
         const data = JSON.parse(raw);
-        if (Array.isArray(data)) {
-          this.state.entries = data;
-          return;
-        }
+        if (Array.isArray(data)) { this.state.entries = data; return; }
       }
-    } catch (e) {
-      // corrupted data, reset
-    }
+    } catch (e) { /* corrupted */ }
     this.state.entries = [];
   },
 
@@ -518,23 +627,140 @@ const App = {
 
   /* ===== Helpers ===== */
   generateId() {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
   },
 
   formatDate(iso) {
     const d = new Date(iso);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   },
 
   typeLabel(type) {
     const map = { book: '书籍', article: '文章', paper: '论文', other: '其他' };
     return map[type] || '其他';
+  },
+
+  escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  },
+
+  /* ===== Hash Routing ===== */
+  handleHash() {
+    const hash = window.location.hash;
+    if (hash.startsWith('#edit')) {
+      const id = hash.slice(6) || null; // '#edit/<id>' or '#edit'
+      this.openEditor(id);
+    } else {
+      this.closeEditor(false);
+    }
+  },
+
+  navigate(hash) {
+    window.location.hash = hash;
+  },
+
+  /* ===== Editor Page ===== */
+  openEditor(entryId) {
+    const page = document.getElementById('editorPage');
+    const list = document.getElementById('listPage');
+    const titleEl = document.getElementById('editorTitle');
+
+    this.state.editingId = entryId || null;
+    this.state.editorDirty = false;
+    document.getElementById('unsavedBar').classList.remove('visible');
+
+    let data = { title: '', author: '', type: 'book', source: '', content: '' };
+    if (entryId) {
+      const entry = this.getEntry(entryId);
+      if (entry) {
+        data = { title: entry.title, author: entry.author, type: entry.type, source: entry.source, content: entry.content };
+      }
+    }
+
+    titleEl.textContent = entryId ? '编辑笔记' : '新笔记';
+    document.getElementById('formTitle').value = data.title;
+    document.getElementById('formAuthor').value = data.author;
+    document.getElementById('formType').value = data.type;
+    document.getElementById('formSource').value = data.source;
+    document.getElementById('formContent').value = data.content;
+
+    this.state.editorOriginal = JSON.stringify(this.getEditorData());
+
+    list.style.display = 'none';
+    page.classList.add('active');
+
+    requestAnimationFrame(() => {
+      document.getElementById('formTitle').focus();
+    });
+  },
+
+  closeEditor(force) {
+    if (!force && this.state.editorDirty) {
+      this.showToast('内容已修改，请先保存或确认放弃', 'error');
+      return;
+    }
+
+    const page = document.getElementById('editorPage');
+    const list = document.getElementById('listPage');
+
+    page.classList.remove('active');
+    list.style.display = '';
+    this.state.editingId = null;
+    this.state.editorDirty = false;
+    document.getElementById('unsavedBar').classList.remove('visible');
+
+    if (window.location.hash) {
+      window.location.hash = '';
+    }
+  },
+
+  getEditorData() {
+    return {
+      title: document.getElementById('formTitle')?.value || '',
+      author: document.getElementById('formAuthor')?.value || '',
+      type: document.getElementById('formType')?.value || 'other',
+      source: document.getElementById('formSource')?.value || '',
+      content: document.getElementById('formContent')?.value || '',
+    };
+  },
+
+  checkEditorDirty() {
+    const current = JSON.stringify(this.getEditorData());
+    const dirty = current !== this.state.editorOriginal;
+    this.state.editorDirty = dirty;
+    document.getElementById('unsavedBar').classList.toggle('visible', dirty);
+  },
+
+  saveEditor() {
+    const data = this.getEditorData();
+
+    if (!data.title.trim()) {
+      this.showToast('请输入书名或标题', 'error');
+      document.getElementById('formTitle')?.focus();
+      return;
+    }
+    if (!data.content.trim()) {
+      this.showToast('请写下你的阅读感悟', 'error');
+      document.getElementById('formContent')?.focus();
+      return;
+    }
+
+    if (this.state.editingId) {
+      this.updateEntry(this.state.editingId, data);
+      this.showToast('笔记已更新', 'success');
+    } else {
+      this.createEntry(data);
+      this.showToast('笔记已保存', 'success');
+    }
+
+    this.state.editorDirty = false;
+    this.state.editorOriginal = JSON.stringify(data);
+    document.getElementById('unsavedBar').classList.remove('visible');
+    this.closeEditor(true);
+    this.render();
   },
 
   /* ===== CRUD ===== */
@@ -580,9 +806,7 @@ const App = {
   getFilteredEntries() {
     const { type, search } = this.state.filter;
     let entries = this.state.entries;
-    if (type !== 'all') {
-      entries = entries.filter(e => e.type === type);
-    }
+    if (type !== 'all') { entries = entries.filter(e => e.type === type); }
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       entries = entries.filter(e =>
@@ -594,13 +818,7 @@ const App = {
     return entries;
   },
 
-  escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  },
-
-  /* ===== Export ===== */
+  /* ===== Export / Import ===== */
   exportJSON() {
     const data = JSON.stringify(this.state.entries, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
@@ -631,20 +849,12 @@ const App = {
           this.showToast('文件格式错误：需要 JSON 数组', 'error');
           return;
         }
-        let added = 0;
-        let skipped = 0;
-        const existingIds = new Set(this.state.entries.map(e => e.id));
+        let added = 0, skipped = 0;
+        const existingIds = new Set(this.state.entries.map(entry => entry.id));
         for (const item of data) {
-          if (!item.id || !item.title || !item.content) {
-            skipped++;
-            continue;
-          }
-          if (existingIds.has(item.id)) {
-            skipped++;
-            continue;
-          }
-          // Ensure required fields
-          const entry = {
+          if (!item.id || !item.title || !item.content) { skipped++; continue; }
+          if (existingIds.has(item.id)) { skipped++; continue; }
+          this.state.entries.unshift({
             id: item.id,
             title: item.title,
             author: item.author || '',
@@ -653,8 +863,7 @@ const App = {
             content: item.content,
             createdAt: item.createdAt || new Date().toISOString(),
             updatedAt: item.updatedAt || new Date().toISOString(),
-          };
-          this.state.entries.unshift(entry);
+          });
           existingIds.add(item.id);
           added++;
         }
@@ -666,7 +875,6 @@ const App = {
       }
     };
     reader.readAsText(file);
-    // Reset so re-importing the same file works
     document.getElementById('importFile').value = '';
   },
 
@@ -684,63 +892,13 @@ const App = {
     }, 3200);
   },
 
-  /* ===== Modal ===== */
+  /* ===== Modal (view / confirm-delete only) ===== */
   openModal(mode, entryId) {
     const overlay = document.getElementById('modalOverlay');
     const modal = document.getElementById('modal');
-    this.state.editingId = entryId || null;
     this.state.pendingDeleteId = null;
 
-    if (mode === 'new' || mode === 'edit') {
-      let data = { title: '', author: '', type: 'book', source: '', content: '' };
-      if (mode === 'edit' && entryId) {
-        const entry = this.getEntry(entryId);
-        if (entry) {
-          data = { title: entry.title, author: entry.author, type: entry.type, source: entry.source, content: entry.content };
-        }
-      }
-      const title = mode === 'new' ? '新笔记' : '编辑笔记';
-      modal.innerHTML = `
-        <div class="modal-header">
-          <h2>${title}</h2>
-          <button class="modal-close" data-action="close-modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>书名/标题 <span class="required">*</span></label>
-            <input type="text" id="formTitle" value="${this.escapeHtml(data.title)}" placeholder="输入书名或文章标题">
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>作者</label>
-              <input type="text" id="formAuthor" value="${this.escapeHtml(data.author)}" placeholder="作者或来源">
-            </div>
-            <div class="form-group">
-              <label>类型</label>
-              <select id="formType">
-                <option value="book" ${data.type === 'book' ? 'selected' : ''}>书籍</option>
-                <option value="article" ${data.type === 'article' ? 'selected' : ''}>文章</option>
-                <option value="paper" ${data.type === 'paper' ? 'selected' : ''}>论文</option>
-                <option value="other" ${data.type === 'other' ? 'selected' : ''}>其他</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>来源/链接</label>
-            <input type="text" id="formSource" value="${this.escapeHtml(data.source)}" placeholder="网址或出处（可选）">
-          </div>
-          <div class="form-group">
-            <label>阅读感悟 <span class="required">*</span></label>
-            <textarea id="formContent" placeholder="写下你的思考和感悟…">${this.escapeHtml(data.content)}</textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div style="flex:1"></div>
-          <button class="btn btn-outline" data-action="close-modal">取消</button>
-          <button class="btn btn-primary" data-action="save-form">保存</button>
-        </div>
-      `;
-    } else if (mode === 'view') {
+    if (mode === 'view') {
       const entry = this.getEntry(entryId);
       if (!entry) return;
       modal.innerHTML = `
@@ -764,7 +922,6 @@ const App = {
           <button class="btn btn-primary" data-action="edit-entry">编辑</button>
         </div>
       `;
-      // Store entry ID for actions
       modal.dataset.viewEntryId = entryId;
     } else if (mode === 'confirm-delete') {
       const entry = this.getEntry(entryId);
@@ -786,48 +943,11 @@ const App = {
     }
 
     overlay.classList.add('active');
-    // Focus first input after transition
-    setTimeout(() => {
-      const firstInput = modal.querySelector('input:not([type=hidden])');
-      if (firstInput) firstInput.focus();
-    }, 150);
   },
 
   closeModal() {
-    const overlay = document.getElementById('modalOverlay');
-    overlay.classList.remove('active');
-    this.state.editingId = null;
+    document.getElementById('modalOverlay').classList.remove('active');
     this.state.pendingDeleteId = null;
-  },
-
-  /* ===== Form Handlers ===== */
-  saveForm() {
-    const title = document.getElementById('formTitle')?.value || '';
-    const author = document.getElementById('formAuthor')?.value || '';
-    const type = document.getElementById('formType')?.value || 'other';
-    const source = document.getElementById('formSource')?.value || '';
-    const content = document.getElementById('formContent')?.value || '';
-
-    if (!title.trim()) {
-      this.showToast('请输入书名或标题', 'error');
-      document.getElementById('formTitle')?.focus();
-      return;
-    }
-    if (!content.trim()) {
-      this.showToast('请写下你的阅读感悟', 'error');
-      document.getElementById('formContent')?.focus();
-      return;
-    }
-
-    if (this.state.editingId) {
-      this.updateEntry(this.state.editingId, { title, author, type, source, content });
-      this.showToast('笔记已更新', 'success');
-    } else {
-      this.createEntry({ title, author, type, source, content });
-      this.showToast('笔记已保存', 'success');
-    }
-    this.closeModal();
-    this.render();
   },
 
   /* ===== Render ===== */
@@ -840,26 +960,17 @@ const App = {
   renderStats(entries) {
     const stats = document.getElementById('stats');
     const total = this.state.entries.length;
+    if (total === 0) { stats.innerHTML = ''; return; }
     const books = this.state.entries.filter(e => e.type === 'book').length;
     const articles = this.state.entries.filter(e => e.type === 'article').length;
     const papers = this.state.entries.filter(e => e.type === 'paper').length;
-    if (total === 0) {
-      stats.innerHTML = '';
-      return;
-    }
     stats.innerHTML = `共 <strong>${total}</strong> 篇 · 书籍 <strong>${books}</strong> · 文章 <strong>${articles}</strong> · 论文 <strong>${papers}</strong>`;
   },
 
   renderEntryList(entries) {
     const list = document.getElementById('entryList');
     const empty = document.getElementById('emptyState');
-
-    if (entries.length === 0) {
-      list.innerHTML = '';
-      empty.style.display = 'block';
-      return;
-    }
-
+    if (entries.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
     list.innerHTML = entries.map(entry => `
       <article class="card">
@@ -882,6 +993,9 @@ const App = {
 
   /* ===== Event Delegation ===== */
   bindEvents() {
+    // Hash change
+    window.addEventListener('hashchange', () => this.handleHash());
+
     // Click delegation
     document.addEventListener('click', (e) => {
       const action = e.target.closest('[data-action]')?.dataset?.action;
@@ -889,10 +1003,10 @@ const App = {
 
       switch (action) {
         case 'new':
-          this.openModal('new');
+          this.navigate('#edit');
           break;
         case 'edit':
-          this.openModal('edit', id);
+          this.navigate('#edit/' + id);
           break;
         case 'view':
           this.openModal('view', id);
@@ -911,7 +1025,8 @@ const App = {
           break;
         case 'edit-entry': {
           const viewId = document.getElementById('modal')?.dataset?.viewEntryId;
-          if (viewId) this.openModal('edit', viewId);
+          this.closeModal();
+          if (viewId) this.navigate('#edit/' + viewId);
           break;
         }
         case 'close-modal':
@@ -923,35 +1038,66 @@ const App = {
         case 'import':
           this.importJSON();
           break;
-        case 'save-form':
-          this.saveForm();
+        case 'editor-save':
+          this.saveEditor();
+          break;
+        case 'editor-cancel':
+          if (this.state.editorDirty) {
+            if (confirm('内容已修改，确定放弃更改吗？')) {
+              this.state.editorDirty = false;
+              this.closeEditor(true);
+            }
+          } else {
+            this.closeEditor(true);
+          }
           break;
       }
     });
 
     // Close modal on overlay click
     document.getElementById('modalOverlay').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) {
-        this.closeModal();
-      }
+      if (e.target === e.currentTarget) this.closeModal();
     });
 
-    // Keyboard: Escape to close
+    // Keyboard
     document.addEventListener('keydown', (e) => {
+      // Escape
       if (e.key === 'Escape') {
         const overlay = document.getElementById('modalOverlay');
         if (overlay.classList.contains('active')) {
           this.closeModal();
+          return;
+        }
+        const editor = document.getElementById('editorPage');
+        if (editor.classList.contains('active')) {
+          if (this.state.editorDirty) {
+            if (confirm('内容已修改，确定放弃更改吗？')) {
+              this.state.editorDirty = false;
+              this.closeEditor(true);
+            }
+          } else {
+            this.closeEditor(true);
+          }
+          return;
         }
       }
-      // Ctrl+Enter to save in form
+      // Ctrl+Enter to save in editor
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        const overlay = document.getElementById('modalOverlay');
-        if (overlay.classList.contains('active') && document.getElementById('formContent')) {
+        const editor = document.getElementById('editorPage');
+        if (editor.classList.contains('active')) {
           e.preventDefault();
-          this.saveForm();
+          this.saveEditor();
         }
       }
+    });
+
+    // Editor dirty tracking
+    const editorInputs = ['formTitle', 'formAuthor', 'formType', 'formSource', 'formContent'];
+    editorInputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => this.checkEditorDirty());
+      el.addEventListener('change', () => this.checkEditorDirty());
     });
 
     // Import file
@@ -982,6 +1128,14 @@ const App = {
         setTimeout(() => App.showToast('提示：定期导出数据以防丢失', 'success'), 1000);
       }
     };
+
+    // Warn before leaving with unsaved editor changes
+    window.addEventListener('beforeunload', (e) => {
+      if (this.state.editorDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
   }
 };
 
