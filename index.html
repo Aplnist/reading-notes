@@ -180,6 +180,102 @@ body::before {
 }
 .toolbar select:focus { border-color: var(--color-accent); }
 
+/* Custom Select Dropdown */
+.custom-select {
+  position: relative;
+  flex-shrink: 0;
+}
+.custom-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px 9px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.25s var(--transition-ease), box-shadow 0.25s var(--transition-ease);
+  white-space: nowrap;
+}
+.custom-select-trigger:hover {
+  border-color: var(--color-accent);
+}
+.custom-select-trigger:focus-visible,
+.custom-select.open .custom-select-trigger {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(122, 70, 39, 0.08);
+}
+.custom-select-label {
+  line-height: 1;
+}
+.custom-select-chevron {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  transition: transform 0.25s var(--transition-ease);
+}
+.custom-select.open .custom-select-chevron {
+  transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--color-shadow), 0 2px 6px rgba(0,0,0,0.08);
+  padding: 6px;
+  z-index: 30;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px) scale(0.97);
+  transition: opacity 0.2s var(--transition-ease), transform 0.2s var(--transition-ease), visibility 0.2s;
+}
+.custom-select.open .custom-select-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.custom-select-option {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s var(--transition-ease), color 0.15s var(--transition-ease);
+  white-space: nowrap;
+}
+.custom-select-option:hover {
+  background: var(--color-border-light);
+}
+.custom-select-option.active {
+  color: var(--color-accent);
+  font-weight: 600;
+  background: rgba(122, 70, 39, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .custom-select-option.active {
+    background: rgba(201, 151, 92, 0.12);
+  }
+  .custom-select-trigger:focus-visible,
+  .custom-select.open .custom-select-trigger {
+    box-shadow: 0 0 0 3px rgba(201, 151, 92, 0.12);
+  }
+}
+
 /* ===== Buttons ===== */
 .btn {
   display: inline-flex;
@@ -711,13 +807,19 @@ body::before {
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="搜索标题或内容…" data-action="search">
       </div>
-      <select id="typeFilter" data-action="filter">
-        <option value="all">全部类型</option>
-        <option value="book">书籍</option>
-        <option value="article">文章</option>
-        <option value="paper">论文</option>
-        <option value="other">其他</option>
-      </select>
+      <div class="custom-select" id="typeFilterWrap">
+        <button class="custom-select-trigger" id="typeFilterBtn" type="button">
+          <span class="custom-select-label">全部类型</span>
+          <svg class="custom-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="custom-select-dropdown" id="typeFilterDropdown">
+          <button class="custom-select-option active" data-value="all">全部类型</button>
+          <button class="custom-select-option" data-value="book">书籍</button>
+          <button class="custom-select-option" data-value="article">文章</button>
+          <button class="custom-select-option" data-value="paper">论文</button>
+          <button class="custom-select-option" data-value="other">其他</button>
+        </div>
+      </div>
       <button class="btn btn-outline btn-sm" data-action="export">导出 JSON</button>
       <button class="btn btn-outline btn-sm" data-action="import">导入 JSON</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
@@ -1311,10 +1413,43 @@ const App = {
       this.render();
     });
 
-    // Type filter
-    document.getElementById('typeFilter').addEventListener('change', (e) => {
-      this.state.filter.type = e.target.value;
+    // Type filter — custom select
+    const typeFilterWrap = document.getElementById('typeFilterWrap');
+    const typeFilterBtn = document.getElementById('typeFilterBtn');
+    const typeFilterDropdown = document.getElementById('typeFilterDropdown');
+    const typeFilterLabel = typeFilterBtn.querySelector('.custom-select-label');
+
+    const toggleFilter = (show) => {
+      const open = typeof show === 'boolean' ? show : !typeFilterWrap.classList.contains('open');
+      typeFilterWrap.classList.toggle('open', open);
+    };
+
+    typeFilterBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFilter();
+    });
+
+    typeFilterDropdown.addEventListener('click', (e) => {
+      const opt = e.target.closest('.custom-select-option');
+      if (!opt) return;
+      const value = opt.dataset.value;
+      this.state.filter.type = value;
+      typeFilterLabel.textContent = opt.textContent;
+      typeFilterDropdown.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      toggleFilter(false);
       this.render();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!typeFilterWrap.contains(e.target)) toggleFilter(false);
+    });
+
+    // Keyboard — close custom select on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && typeFilterWrap.classList.contains('open')) {
+        toggleFilter(false);
+      }
     });
 
     // Save hint counter
